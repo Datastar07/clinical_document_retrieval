@@ -1,4 +1,4 @@
-.PHONY: setup setup-api ingest index evaluate ablate test all qdrant synth-docs ingest-synth evaluate-synth latency rebuild-sqlite answer enqueue-ingest ingest-worker grounding api api-reload
+.PHONY: setup setup-api ingest index evaluate ablate test all qdrant latency rebuild-sqlite answer enqueue-ingest ingest-worker grounding api api-reload
 
 PYTHON ?= python3
 DEVICE ?= auto
@@ -17,7 +17,7 @@ setup-api:
 qdrant:
 	docker compose up -d qdrant || true
 
-# FastAPI — Swagger at http://HOST:9006/docs
+# FastAPI — Reviewer UI http://HOST:9006/  ·  Swagger /docs
 # Examples: make api DEVICE=cuda   |   make api DEVICE=cpu   |   make api DEVICE=auto
 api:
 	$(PYTHON) scripts/serve_api.py --host 0.0.0.0 --port 9006 --device $(DEVICE)
@@ -57,15 +57,6 @@ enqueue-ingest:
 
 ingest-worker:
 	$(PYTHON) scripts/ingest_worker.py --config configs/default.yaml --once
-
-synth-docs:
-	$(PYTHON) scripts/generate_synth_docs.py --out data/synth
-
-ingest-synth:
-	$(PYTHON) scripts/ingest_synth.py --config configs/default.yaml
-
-evaluate-synth:
-	$(PYTHON) scripts/evaluate_synth.py --config configs/default.yaml --no-rerank --device $(DEVICE)
 
 latency:
 	$(PYTHON) scripts/profile_latency.py --config configs/default.yaml --limit 8 --device $(DEVICE)
