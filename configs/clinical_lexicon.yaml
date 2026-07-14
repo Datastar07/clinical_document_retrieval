@@ -1,0 +1,45 @@
+medications:
+  - Metformin
+  - Lisinopril
+  - Empagliflozin
+  - Jardiance
+  - Amlodipine
+  - Atorvastatin
+  - Ozempic
+  - Semaglutide
+  - Chlorthalidone
+  - Losartan
+  - Hydrochlorothiazide
+  - Montelukast
+  - Naproxen
+  - Albuterol
+  - Fluticasone
+  - Spironolactone
+  - Carvedilol
+
+aliases:
+  Jardiance: [empagliflozin, SGLT2, SGLT2 inhibitor]
+  Empagliflozin: [Jardiance, SGLT2]
+  Ozempic: [semaglutide, GLP-1, GLP-1 receptor agonist]
+  Semaglutide: [Ozempic, GLP-1]
+  Hydrochlorothiazide: [HCTZ]
+  Amlodipine: [Norvasc]
+
+labs:
+  - HbA1c
+  - LDL
+  - HDL
+  - TSH
+  - Creatinine
+  - Potassium
+  - BMI
+  - Weight
+
+specialties:
+  - Cardiology
+  - Endocrinology
+  - Allergy / Immunology
+  - Nephrology
+  - Ophthalmology
+  - Podiatry
+  - Neurology

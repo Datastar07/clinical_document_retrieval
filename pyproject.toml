@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clinical-retrieval"
+version = "2.0.0"
+description = "Multimodal structure-aware clinical document retrieval with evidence grounding"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pymupdf>=1.24.0",
+  "pydantic>=2.0",
+  "pydantic-settings>=2.0",
+  "pyyaml>=6.0",
+  "numpy>=1.26",
+  "rank-bm25>=0.2.2",
+  "sentence-transformers>=3.0.0",
+  "torch>=2.0",
+  "python-dateutil>=2.8",
+  "tqdm>=4.66",
+  "typer>=0.12",
+  "rich>=13.0",
+  "qdrant-client>=1.9.0",
+  "pillow>=10.0",
+  "docling>=2.0",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4", "httpx>=0.27"]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.27"]
+visual = ["colpali-engine>=0.3.0"]
+
+[project.scripts]
+clinical-ingest = "clinical_retrieval.cli:ingest_main"
+clinical-index = "clinical_retrieval.cli:index_main"
+clinical-retrieve = "clinical_retrieval.cli:retrieve_main"
+clinical-evaluate = "clinical_retrieval.cli:evaluate_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,14 @@
+metrics:
+  - hit_at_1
+  - hit_at_3
+  - hit_at_5
+  - hit_at_10
+  - mrr_at_10
+  - ndcg_at_10
+  - page_overlap_accuracy
+  - mean_first_relevant_rank
+
+matching:
+  primary: normalized_substring
+  secondary: token_set_overlap
+  tertiary: fuzzy_ratio
