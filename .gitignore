@@ -94,14 +94,8 @@ data/job_work/
 
 # --- Outputs ---
 # Ignore bulky dumps; keep compact summary reports for reviewers
-outputs/**
-!outputs/
-!outputs/.gitkeep
-!outputs/evaluation_summary.json
-!outputs/ablation_summary.json
-!outputs/grounding_report.json
-!outputs/latency_profile.json
-!outputs/error_analysis.csv
+
+
 
 
 
