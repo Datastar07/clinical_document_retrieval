@@ -26,11 +26,12 @@ dependencies = [
   "docling>=2.0",
   "fastapi>=0.110",
   "uvicorn[standard]>=0.27",
+  "python-multipart>=0.0.9",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.4", "httpx>=0.27"]
-api = ["fastapi>=0.110", "uvicorn[standard]>=0.27"]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
 visual = ["colpali-engine>=0.3.0"]
 
 [project.scripts]

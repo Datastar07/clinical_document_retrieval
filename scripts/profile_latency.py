@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Profile api vs full retrieve latency on the gold evaluation set."""
+"""Profile full-pipeline retrieve latency on the gold evaluation set."""
 
 from __future__ import annotations
 
@@ -49,30 +49,18 @@ def main() -> None:
     args = ap.parse_args()
 
     root = Path.cwd()
-    base = AppConfig.from_yaml(args.config).resolve(root)
-    apply_device(base, args.device)
-    items = load_evaluation(base.paths.evaluation_path)[: args.limit]
-
-    profiles = {}
-    # API profile
-    api = base.model_copy(deep=True)
-    api.retrieval.profile = "api"
-    api.retrieval.enable_visual = False
-    api.models.visual_enabled = False
-    print("Profiling api …")
-    profiles["api"] = _timed_run(api, items, load_visual=False)
-
-    # Full profile without visual (fair compare if GPU memory tight)
-    full = base.model_copy(deep=True)
+    full = AppConfig.from_yaml(args.config).resolve(root)
+    apply_device(full, args.device)
     full.retrieval.profile = "full"
-    print("Profiling full (config visual flag) …")
-    profiles["full"] = _timed_run(
-        full, items, load_visual=bool(full.models.visual_enabled)
-    )
+    items = load_evaluation(full.paths.evaluation_path)[: args.limit]
+
+    print("Profiling full pipeline …")
+    stats = _timed_run(full, items, load_visual=bool(full.models.visual_enabled))
 
     out = {
         "limit": args.limit,
-        "profiles": profiles,
+        "profile": "full",
+        **stats,
     }
     path = root / args.output
     path.parent.mkdir(parents=True, exist_ok=True)

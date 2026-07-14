@@ -5,6 +5,6 @@ services:
       - "6340:6333"
       - "6341:6334"
     volumes:
-      # Local portable store (reviewer machine). Override if needed.
+      # Local portable store. Override if needed.
       - ./data/qdrant_storage:/qdrant/storage
     restart: unless-stopped

@@ -1,9 +1,9 @@
-"""FastAPI surface for clinical retrieval + grounded answers.
+"""FastAPI surface for clinical retrieval + grounded answers + PDF upload pipeline.
 
 Reviewer quick start:
   pip install -e ".[api]"
-  make index-novisual   # once, if indexes are missing
-  make api              # → http://127.0.0.1:9006/docs
+  make api              # → http://127.0.0.1:9006/  (UI)  ·  /docs (Swagger)
+  Upload a PDF in the UI — ingest + index runs automatically.
 """
 
 from __future__ import annotations
@@ -13,32 +13,45 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from clinical_retrieval.api.pipeline_jobs import pipeline_jobs
 from clinical_retrieval.config import AppConfig
 from clinical_retrieval.device import apply_device, cuda_available, resolve_device
 from clinical_retrieval.generation.answer import bundle_to_dict, generate_answer
 from clinical_retrieval.retrieval.factory import build_retriever
+from clinical_retrieval.retrieval.model_registry import clear_registry
 
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 DEFAULT_CONFIG = os.environ.get("CLINICAL_CONFIG", "configs/default.yaml")
-# Reviewer-friendly defaults: no visual model unless explicitly enabled
-DEFAULT_PROFILE = os.environ.get("CLINICAL_API_PROFILE", "api")
-DEFAULT_NO_VISUAL = os.environ.get("CLINICAL_API_NO_VISUAL", "1").strip().lower() in {
+DEFAULT_PROFILE = "full"
+DEFAULT_NO_VISUAL = os.environ.get("CLINICAL_API_NO_VISUAL", "0").strip().lower() in {
     "1",
     "true",
     "yes",
 }
 DEFAULT_DEVICE = os.environ.get("CLINICAL_DEVICE", "auto")
+# Uploads skip ColQwen by default (slow). Set CLINICAL_UPLOAD_VISUAL=1 to build visual.
+DEFAULT_UPLOAD_SKIP_VISUAL = os.environ.get("CLINICAL_UPLOAD_VISUAL", "0").strip().lower() not in {
+    "1",
+    "true",
+    "yes",
+}
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+MAX_UPLOAD_MB = int(os.environ.get("CLINICAL_UPLOAD_MAX_MB", "250"))
 
 app = FastAPI(
     title="Clinical Document Retrieval API",
     version=APP_VERSION,
     description=(
         "Hybrid multimodal retrieval over clinical PDFs with evidence grounding "
-        "(page / section / span / bbox). Use `/docs` for interactive try-out."
+        "(page / section / span / bbox). Open `/` for the reviewer UI or `/docs` for Swagger. "
+        "POST `/upload` runs ingest + index automatically."
     ),
 )
 
@@ -50,18 +63,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
 
 class QueryRequest(BaseModel):
     query: str = Field(..., examples=["What is the patient's blood type?"])
     query_id: str = "api"
     top_k: int = Field(10, ge=1, le=50)
     profile: Literal["api", "full"] | None = Field(
-        default=None,
-        description="api = faster (no visual); full = max recall. Default from env/server.",
+        default="full",
+        description="Ignored: API always uses the full pipeline.",
     )
     no_visual: bool | None = Field(
         default=None,
-        description="Force-disable ColQwen visual channel. Default true for easy reviewer runs.",
+        description="Force-disable ColQwen visual channel. Default false (visual on).",
     )
 
 
@@ -83,11 +99,24 @@ class AnswerRequest(QueryRequest):
 
 
 def _project_root() -> Path:
-    # Prefer cwd (repo root when started via make api); else package parents
     cwd = Path.cwd()
     if (cwd / "configs" / "default.yaml").exists():
         return cwd
     return Path(__file__).resolve().parents[3]
+
+
+def _apply_active_document(config: AppConfig) -> AppConfig:
+    overlay = pipeline_jobs.active_document()
+    if not overlay:
+        return config
+    if overlay.get("source_pdf"):
+        config.document.source_pdf = overlay["source_pdf"]
+    if overlay.get("document_id"):
+        config.document.document_id = overlay["document_id"]
+        config.document.patient_id = overlay.get("patient_id") or overlay["document_id"]
+    if overlay.get("patient_name"):
+        config.document.patient_name = overlay["patient_name"]
+    return config
 
 
 def _load_config(profile: str, no_visual: bool, device_pref: str | None = None) -> AppConfig:
@@ -98,6 +127,7 @@ def _load_config(profile: str, no_visual: bool, device_pref: str | None = None) 
     if not cfg_path.exists():
         raise FileNotFoundError(f"Config not found: {cfg_path}")
     config = AppConfig.from_yaml(cfg_path).resolve(root)
+    config = _apply_active_document(config)
     config.retrieval.profile = profile
     if no_visual or profile == "api":
         config.retrieval.enable_visual = False
@@ -119,15 +149,22 @@ def _index_status(config: AppConfig) -> dict[str, Any]:
     }
 
 
+def _invalidate_retriever() -> None:
+    clear_registry()
+    get_retriever.cache_clear()
+
+
+pipeline_jobs.set_on_ready(_invalidate_retriever)
+
+
 @lru_cache(maxsize=8)
-def get_retriever(profile: str = "api", no_visual: bool = True, device_pref: str = "auto"):
+def get_retriever(profile: str = "full", no_visual: bool = False, device_pref: str = "auto"):
     config = _load_config(profile, no_visual, device_pref)
     status = _index_status(config)
     if not status["chunks_jsonl"] or not status["bm25"]:
         raise RuntimeError(
-            "Indexes missing. From repo root run: "
-            "`make ingest` (if needed) then `make index-novisual` "
-            f"(chunks={status['chunks_jsonl']}, bm25={status['bm25']})."
+            "Indexes missing. Upload a PDF in the UI, or run `make ingest` then "
+            f"`make index-novisual` (chunks={status['chunks_jsonl']}, bm25={status['bm25']})."
         )
     return build_retriever(
         config,
@@ -137,34 +174,47 @@ def get_retriever(profile: str = "api", no_visual: bool = True, device_pref: str
 
 
 def _resolve_flags(req: QueryRequest) -> tuple[str, bool, str]:
-    profile = req.profile or DEFAULT_PROFILE
+    profile = "full"
     no_visual = DEFAULT_NO_VISUAL if req.no_visual is None else bool(req.no_visual)
-    if profile == "api":
-        no_visual = True
     device_pref = DEFAULT_DEVICE
     return profile, no_visual, device_pref
 
 
-@app.get("/", tags=["meta"])
-def root():
+@app.get("/", tags=["ui"], include_in_schema=False)
+def ui_home():
+    index = STATIC_DIR / "index.html"
+    if not index.exists():
+        raise HTTPException(status_code=404, detail="UI static files missing")
+    return FileResponse(index)
+
+
+@app.get("/info", tags=["meta"])
+def info():
     resolved = resolve_device(DEFAULT_DEVICE, log=False)
     return {
         "service": "clinical-document-retrieval",
         "version": APP_VERSION,
+        "ui": "/",
         "docs": "/docs",
         "health": "/health",
         "endpoints": {
             "POST /retrieve": "Top-K grounded chunks",
             "POST /answer": "Retrieve + grounded extractive/LLM answer",
+            "POST /upload": "Upload PDF → auto ingest + index",
+            "GET /pipeline/{job_id}": "Pipeline job status",
+            "GET /pipeline": "Latest pipeline job",
             "GET /examples": "Sample queries",
         },
+        "active_document": pipeline_jobs.active_document(),
         "defaults": {
             "profile": DEFAULT_PROFILE,
             "no_visual": DEFAULT_NO_VISUAL,
+            "upload_skip_visual": DEFAULT_UPLOAD_SKIP_VISUAL,
             "device_preference": DEFAULT_DEVICE,
             "device_resolved": resolved,
             "cuda_available": cuda_available(),
             "config": DEFAULT_CONFIG,
+            "max_upload_mb": MAX_UPLOAD_MB,
         },
     }
 
@@ -175,10 +225,18 @@ def health():
         config = _load_config(DEFAULT_PROFILE, DEFAULT_NO_VISUAL, DEFAULT_DEVICE)
         status = _index_status(config)
         ready = bool(status["chunks_jsonl"] and status["bm25"])
+        latest = pipeline_jobs.latest()
         return {
             "status": "ok" if ready else "degraded",
             "version": APP_VERSION,
             "ready_for_retrieve": ready,
+            "active_document": pipeline_jobs.active_document()
+            or {
+                "document_id": config.document.document_id,
+                "source_pdf": config.document.source_pdf,
+                "patient_name": config.document.patient_name,
+            },
+            "pipeline": latest.to_dict() if latest else None,
             "device": {
                 "preference": DEFAULT_DEVICE,
                 "resolved": config.models.embedding_device,
@@ -187,7 +245,7 @@ def health():
             "indexes": status,
             "hint": None
             if ready
-            else "Run `make index-novisual DEVICE=cpu` (and ingest if chunks missing) before /retrieve.",
+            else "Upload a PDF in the UI, or run `make ingest` + `make index-novisual`.",
         }
     except Exception as exc:
         return {"status": "error", "version": APP_VERSION, "detail": str(exc)}
@@ -214,8 +272,92 @@ def examples():
     }
 
 
+@app.post("/upload", tags=["pipeline"])
+async def upload_pdf(
+    file: UploadFile = File(..., description="Clinical PDF to ingest + index"),
+    document_id: str | None = Form(default=None),
+    patient_name: str | None = Form(default=None),
+    build_visual: str = Form(
+        default="false",
+        description="true/false — also build ColQwen visual index (slow / GPU).",
+    ),
+):
+    """Save PDF and run full ingest → index automatically in the background."""
+    filename = file.filename or "upload.pdf"
+    if not filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+
+    data = await file.read()
+    if not data:
+        raise HTTPException(status_code=400, detail="Empty upload")
+    max_bytes = MAX_UPLOAD_MB * 1024 * 1024
+    if len(data) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large ({len(data)} bytes). Max {MAX_UPLOAD_MB} MB.",
+        )
+    if not data.startswith(b"%PDF"):
+        raise HTTPException(status_code=400, detail="File does not look like a PDF")
+
+    want_visual = str(build_visual).strip().lower() in {"1", "true", "yes", "on"}
+    skip_visual = not want_visual
+    if DEFAULT_NO_VISUAL:
+        skip_visual = True
+
+    root = _project_root()
+    raw_dir = root / "data" / "raw"
+
+    def load_cfg() -> AppConfig:
+        return _load_config(DEFAULT_PROFILE, skip_visual, DEFAULT_DEVICE)
+
+    try:
+        job = pipeline_jobs.start(
+            pdf_bytes=data,
+            filename=filename,
+            document_id=document_id,
+            patient_name=patient_name,
+            skip_visual=skip_visual,
+            load_config=load_cfg,
+            raw_dir=raw_dir,
+            device_pref=DEFAULT_DEVICE,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return {
+        "job_id": job.job_id,
+        "status": job.status,
+        "message": "Upload accepted. Poll GET /pipeline/{job_id} until status=ready.",
+        "poll_url": f"/pipeline/{job.job_id}",
+        "job": job.to_dict(),
+    }
+
+
+@app.get("/pipeline", tags=["pipeline"])
+def pipeline_latest():
+    job = pipeline_jobs.latest()
+    if not job:
+        return {"job": None, "busy": False}
+    return {"job": job.to_dict(), "busy": pipeline_jobs.is_busy()}
+
+
+@app.get("/pipeline/{job_id}", tags=["pipeline"])
+def pipeline_status(job_id: str):
+    job = pipeline_jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Unknown job_id={job_id}")
+    return job.to_dict()
+
+
 @app.post("/retrieve", tags=["retrieval"])
 def retrieve(req: QueryRequest):
+    if pipeline_jobs.is_busy():
+        raise HTTPException(
+            status_code=409,
+            detail="Pipeline is building indexes from an upload. Wait until status=ready.",
+        )
     profile, no_visual, device_pref = _resolve_flags(req)
     try:
         retriever = get_retriever(profile, no_visual, device_pref)
@@ -230,6 +372,11 @@ def retrieve(req: QueryRequest):
 
 @app.post("/answer", tags=["generation"])
 def answer(req: AnswerRequest):
+    if pipeline_jobs.is_busy():
+        raise HTTPException(
+            status_code=409,
+            detail="Pipeline is building indexes from an upload. Wait until status=ready.",
+        )
     profile, no_visual, device_pref = _resolve_flags(req)
     try:
         retriever = get_retriever(profile, no_visual, device_pref)
