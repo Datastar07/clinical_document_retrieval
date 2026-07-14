@@ -1,0 +1,10 @@
+{
+  "limit": 6,
+  "profile": "full",
+  "n_queries": 6,
+  "model_load_sec": 28.873,
+  "mean_sec": 1.199,
+  "p50_sec": 1.104,
+  "p95_sec": 1.804,
+  "max_sec": 1.804
+}

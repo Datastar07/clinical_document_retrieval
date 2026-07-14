@@ -1,0 +1,114 @@
+# ─────────────────────────────────────────────
+# clinical_document_retrieval — Git ignore
+# Source + configs + small fixtures: keep
+# Indexes, caches, secrets, heavy run artifacts: drop
+# ─────────────────────────────────────────────
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+pip-wheel-metadata/
+share/python-wheels/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+*.cover
+.cache/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+ENV/
+
+# --- Secrets / local env ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+secrets/
+!.env.example
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Model / HF / Torch caches ---
+**/hf_cache/
+**/.huggingface/
+**/torch_cache/
+wandb/
+mlruns/
+lightning_logs/
+
+# --- Runtime indexes & embeddings (large) ---
+*.npy
+*.npz
+*.pkl
+*.joblib
+*.faiss
+*.sqlite
+*.sqlite3
+*.db
+
+# Symlinked / generated processed corpora (symlink or dir)
+/data/processed
+/data/indexes
+data/processed/
+data/indexes/
+data/page_images/
+data/visual_mv/
+**/page_images/
+**/visual_mv/
+qdrant/
+**/qdrant_storage/
+data/qdrant_storage/
+
+# Job run workspaces (regenerable) — ignore BEFORE keep rules
+data/job_queue/
+data/job_work/
+
+# Duplicate copies living at data/ root (canonical paths are data/raw + data/evaluation)
+/data/PT-55188*.pdf
+
+# --- Outputs ---
+# Ignore bulky dumps; keep compact summary reports for reviewers
+
+
+
+
+
+# --- Logs / temp ---
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+docling_checkpoint.json
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Docker stray ---
+docker-compose.override.yml

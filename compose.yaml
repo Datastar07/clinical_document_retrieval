@@ -1,0 +1,10 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    ports:
+      - "6340:6333"
+      - "6341:6334"
+    volumes:
+      # Local portable store. Override if needed.
+      - ./data/qdrant_storage:/qdrant/storage
+    restart: unless-stopped

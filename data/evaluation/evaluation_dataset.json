@@ -1,0 +1,146 @@
+[
+    {
+        "query_id": "Q001",
+        "query": "What is the patient's blood type?",
+        "expected_pages": "1,2",
+        "ground_truth_evidence": "Blood Type: A+",
+        "category": "Demographics",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q002",
+        "query": "Does the patient have any known drug allergies, and what reaction did they have?",
+        "expected_pages": "2",
+        "ground_truth_evidence": "Penicillin \u2014 Reaction: Hives \u2014 Severity: Moderate",
+        "category": "Allergies",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q003",
+        "query": "What medication and dose is the patient taking for type 2 diabetes at baseline?",
+        "expected_pages": "2",
+        "ground_truth_evidence": "Metformin 500 mg, Twice daily, Indication: Type 2 Diabetes Mellitus",
+        "category": "Medications",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q004",
+        "query": "In what year was the patient diagnosed with hypertension, and what is the current status of that condition?",
+        "expected_pages": "2",
+        "ground_truth_evidence": "Hypertension \u2014 Year Diagnosed 2005 \u2014 Status: Chronic",
+        "category": "Medical History",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q005",
+        "query": "What past surgical procedures has the patient had?",
+        "expected_pages": "2",
+        "ground_truth_evidence": "Appendectomy (1980, laparoscopic, uneventful recovery); Right Knee Arthroscopy (2020, partial meniscectomy for medial tear)",
+        "category": "Surgical History",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q006",
+        "query": "Is there a family history of coronary artery disease?",
+        "expected_pages": "3",
+        "ground_truth_evidence": "Family History \u2014 Father: Coronary Artery Disease",
+        "category": "Family History",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q007",
+        "query": "What ICD-10 diagnosis codes were documented during the patient's annual physical exam on February 20, 2024?",
+        "expected_pages": "9",
+        "ground_truth_evidence": "Z00.00 (Encounter for general adult medical examination without abnormal findings), I10 (Essential hypertension), E11.9 (Type 2 diabetes mellitus without complications), E78.5 (Hyperlipidemia, unspecified), E66.9 (Obesity, unspecified)",
+        "category": "Assessment/ICD Codes",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q008",
+        "query": "What new diabetes medication was started after the February 2024 annual physical, and why?",
+        "expected_pages": "9",
+        "ground_truth_evidence": "Initiate Jardiance (empagliflozin) 10mg daily to improve glycemic control given HbA1c of 8.2%",
+        "category": "Plan/Medication Change",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q009",
+        "query": "What was the patient's HbA1c level when Empagliflozin was increased from 10mg to 25mg daily?",
+        "expected_pages": "50",
+        "ground_truth_evidence": "Persistent HbA1c of 8.0% after 5 months on the lower dose; Increase Empagliflozin from 10mg to 25mg daily",
+        "category": "Labs/Plan",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q010",
+        "query": "During the office visit in July 2029, what was the patient's blood pressure and which new antihypertensive medication was started?",
+        "expected_pages": "150",
+        "ground_truth_evidence": "BP 161/99 mmHg; Initiate Amlodipine 5mg daily",
+        "category": "Vitals/Plan",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q011",
+        "query": "What GLP-1 receptor agonist was added to the patient's diabetes regimen, and at what starting dose?",
+        "expected_pages": "300",
+        "ground_truth_evidence": "Add a GLP-1 receptor agonist, such as Ozempic (semaglutide) 0.25mg SC weekly",
+        "category": "Plan/Medication Change",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q012",
+        "query": "What lab values and diagnosis codes were recorded when an SGLT2 inhibitor was added to the patient's treatment?",
+        "expected_pages": "450",
+        "ground_truth_evidence": "HbA1c 7.5%, LDL Cholesterol 110.8 mg/dL; I10, E11.9, E78.5, Z00.00; Add an SGLT2 inhibitor (e.g., Empagliflozin 10mg daily)",
+        "category": "Labs/ICD Codes/Plan",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q013",
+        "query": "Which specialty was the patient referred to for co-management of persistently uncontrolled hypertension?",
+        "expected_pages": "600",
+        "ground_truth_evidence": "Cardiology \u2014 For further evaluation and co-management of her persistently uncontrolled hypertension",
+        "category": "Referrals",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q014",
+        "query": "Who electronically signed the encounter note dated August 11, 2033?",
+        "expected_pages": "600",
+        "ground_truth_evidence": "Electronically signed by: Dr. Marcus Tanaka, MD Date: August 11, 2033",
+        "category": "Provider/Signature",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q015",
+        "query": "What was the patient's HbA1c level discussed in the clinical notes around the encounter signed by Dr. Daniel Kim in September 2045?",
+        "expected_pages": "750",
+        "ground_truth_evidence": "Her HbA1c of 6.9% is at target for many older adults but still warrants continued focus on lifestyle and medication adherence",
+        "category": "Clinical Notes/Labs",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q016",
+        "query": "What secondary causes of hypertension were being worked up when Chlorthalidone was considered as a fourth antihypertensive agent?",
+        "expected_pages": "900",
+        "ground_truth_evidence": "Secondary Hypertension Workup \u2014 renal artery stenosis or primary aldosteronism; Plasma Renin Activity and Aldosterone Level; Thyroid Stimulating Hormone (TSH)",
+        "category": "Plan/Labs",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q017",
+        "query": "What imaging study was ordered to screen for renovascular hypertension, and what follow-up timeframe was given?",
+        "expected_pages": "1050",
+        "ground_truth_evidence": "Renal Ultrasound with Doppler \u2014 To screen for renovascular hypertension (renal artery stenosis); return to the clinic in 2 weeks for a blood pressure recheck",
+        "category": "Imaging/Follow-up",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    },
+    {
+        "query_id": "Q018",
+        "query": "What was the patient's weight and blood pressure at the encounter on May 18, 2075?",
+        "expected_pages": "1050",
+        "ground_truth_evidence": "BP 164/100 mmHg; Weight 146 lbs",
+        "category": "Vitals",
+        "source_document": "PT-55188_-_Claudette_Johnson_.pdf"
+    }
+]

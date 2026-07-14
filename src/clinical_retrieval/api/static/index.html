@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinical Document Retrieval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="shell">
+    <header class="top">
+      <div class="brand">
+        <p class="brand-mark">Clinical Retrieval</p>
+        <p class="brand-sub">Grounded evidence search for reviewers</p>
+      </div>
+      <div class="status" id="statusBar">
+        <span class="pill" id="healthPill">checking…</span>
+        <span class="pill muted" id="docPill">chart —</span>
+        <span class="pill muted" id="devicePill">device —</span>
+        <a class="pill link" href="/docs" target="_blank" rel="noopener">API docs</a>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="compose">
+        <h1>Ask the chart. Get the page.</h1>
+        <p class="lede">
+          Hybrid retrieval returns Top-K clinical evidence with page, section, span, and bounding-box grounding —
+          not a chatbot guess.
+        </p>
+
+        <form id="uploadForm" class="upload">
+          <div class="upload-head">
+            <h2>Upload chart PDF</h2>
+            <p>Auto-runs ingest → index → ready to search. Replaces the active chart.</p>
+          </div>
+          <div class="upload-row">
+            <label class="file-field">
+              <span>PDF file</span>
+              <input id="pdfFile" type="file" accept="application/pdf,.pdf" required />
+            </label>
+            <label>
+              Document ID
+              <input id="docId" type="text" placeholder="auto from filename" />
+            </label>
+            <label class="check">
+              <input id="buildVisual" type="checkbox" />
+              Build visual index (slow)
+            </label>
+            <button type="submit" id="uploadBtn">Upload &amp; process</button>
+          </div>
+          <div id="pipelineBox" class="pipeline hidden" aria-live="polite"></div>
+        </form>
+
+        <form id="searchForm" class="search">
+          <label class="sr-only" for="query">Clinical query</label>
+          <textarea id="query" name="query" rows="3" placeholder="e.g. What is the patient’s blood type?" required></textarea>
+
+          <div class="controls">
+            <label>
+              Mode
+              <select id="mode">
+                <option value="retrieve" selected>Retrieve only</option>
+                <option value="answer">Retrieve + grounded answer</option>
+              </select>
+            </label>
+            <label>
+              Top-K
+              <input id="topK" type="number" min="1" max="20" value="10" />
+            </label>
+            <button type="submit" id="runBtn">Search</button>
+          </div>
+        </form>
+
+        <div class="examples" id="examples"></div>
+      </section>
+
+      <section class="results-pane" aria-live="polite">
+        <div id="answerBox" class="answer hidden"></div>
+        <div id="metaBox" class="meta hidden"></div>
+        <div id="results" class="results"></div>
+        <div id="empty" class="empty">
+          Run a query to see ranked evidence with grounding metadata.
+        </div>
+        <div id="error" class="error hidden"></div>
+        <div id="loading" class="loading hidden">Searching indexes…</div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>FastAPI · port 9006</span>
+      <span>Device auto · CUDA if available else CPU</span>
+    </footer>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

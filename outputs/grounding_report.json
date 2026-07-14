@@ -1,0 +1,494 @@
+{
+  "summary": {
+    "n_queries": 18,
+    "n_retrieval_hits": 18,
+    "page_agreement_among_hits": 0.7777777777777778,
+    "fully_grounded_matched_hits": 1.0,
+    "field_missing_on_matched_hits": {
+      "document_id": 0,
+      "page": 0,
+      "section": 0,
+      "character_span": 0,
+      "bounding_box": 0
+    },
+    "mean_top_k_fully_grounded": 10.0
+  },
+  "per_query": [
+    {
+      "query_id": "Q001",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_SECTION_08738",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 3,
+        "section": "Patient Demographics",
+        "character_span": [
+          0,
+          366
+        ],
+        "bounding_box": [
+          62.0,
+          57.02998733520508,
+          178.13800048828125,
+          72.17698669433594
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q002",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_SECTION_08739",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 3,
+        "section": "Allergies",
+        "character_span": [
+          0,
+          63
+        ],
+        "bounding_box": [
+          62.0,
+          269.0299987792969,
+          108.46400451660156,
+          284.177001953125
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q003",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_00011",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 3,
+        "section": "Current Medications",
+        "character_span": [
+          0,
+          67
+        ],
+        "bounding_box": [
+          62.0,
+          349.0299987792969,
+          168.34799194335938,
+          364.177001953125
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q004",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_00012",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 3,
+        "section": "Medical & Surgical History",
+        "character_span": [
+          0,
+          52
+        ],
+        "bounding_box": [
+          60.0,
+          703.125,
+          425.09393310546875,
+          715.490966796875
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q005",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_08736",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 2,
+        "section": "Surgical History",
+        "character_span": [
+          0,
+          161
+        ],
+        "bounding_box": [
+          60.0,
+          703.125,
+          425.09393310546875,
+          715.490966796875
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q006",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_00019",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 2,
+        "page_start": 2,
+        "page_end": 3,
+        "section": "Family History",
+        "character_span": [
+          0,
+          48
+        ],
+        "bounding_box": [
+          42.0,
+          121.16999053955078,
+          104.01900482177734,
+          133.56298828125
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q007",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_00071",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 9,
+        "page_start": 9,
+        "page_end": 9,
+        "section": "A — Assessment / Diagnoses",
+        "character_span": [
+          0,
+          241
+        ],
+        "bounding_box": [
+          50.0,
+          344.1999816894531,
+          351.9119567871094,
+          355.1919860839844
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q008",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_COMPOUND_14456",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 9,
+        "page_start": 9,
+        "page_end": 10,
+        "section": "Plan / Laboratory Orders",
+        "character_span": [
+          0,
+          2221
+        ],
+        "bounding_box": [
+          56.0,
+          510.125,
+          566.344970703125,
+          522.490966796875
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q009",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_00416",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 50,
+        "page_start": 50,
+        "page_end": 50,
+        "section": "P — Plan",
+        "character_span": [
+          0,
+          124
+        ],
+        "bounding_box": [
+          254.39999389648438,
+          632.2000122070312,
+          438.0159912109375,
+          679.1920166015625
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q010",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_COMPOUND_14678",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 150,
+        "page_start": 150,
+        "page_end": 151,
+        "section": "Labs / Assessment / Plan",
+        "character_span": [
+          0,
+          2576
+        ],
+        "bounding_box": [
+          263.6000061035156,
+          78.19998931884766,
+          547.719970703125,
+          101.19198608398438
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q011",
+      "hit_at_10": true,
+      "page_overlap": false,
+      "matched_chunk_id": "PT55188_SECTION_09079",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 67,
+        "page_start": 67,
+        "page_end": 67,
+        "section": "P — Plan",
+        "character_span": [
+          0,
+          2162
+        ],
+        "bounding_box": [
+          56.0,
+          343.125,
+          562.3580932617188,
+          355.4909973144531
+        ]
+      },
+      "issues": [
+        "page_mismatch_got_67_expected_[300]"
+      ],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q012",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_COMPOUND_15150",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 450,
+        "page_start": 450,
+        "page_end": 450,
+        "section": "Labs / Assessment / Plan",
+        "character_span": [
+          0,
+          2641
+        ],
+        "bounding_box": [
+          42.0,
+          86.16999053955078,
+          127.01400756835938,
+          98.56298828125
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q013",
+      "hit_at_10": true,
+      "page_overlap": false,
+      "matched_chunk_id": "PT55188_SECTION_09848",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 214,
+        "page_start": 214,
+        "page_end": 215,
+        "section": "Referrals",
+        "character_span": [
+          0,
+          635
+        ],
+        "bounding_box": [
+          60.0,
+          724.2000122070312,
+          531.239990234375,
+          747.1920166015625
+        ]
+      },
+      "issues": [
+        "page_mismatch_got_214_expected_[600]"
+      ],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q014",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_SECTION_11843",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 600,
+        "page_start": 600,
+        "page_end": 600,
+        "section": "Electronic Signature",
+        "character_span": [
+          0,
+          101
+        ],
+        "bounding_box": [
+          42.0,
+          669.7000122070312,
+          426.6399230957031,
+          680.6920166015625
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q015",
+      "hit_at_10": true,
+      "page_overlap": false,
+      "matched_chunk_id": "PT55188_COMPOUND_15622",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 748,
+        "page_start": 748,
+        "page_end": 749,
+        "section": "Labs / Assessment / Plan",
+        "character_span": [
+          0,
+          2768
+        ],
+        "bounding_box": [
+          263.6000061035156,
+          304.6999816894531,
+          540.6079711914062,
+          327.6919860839844
+        ]
+      },
+      "issues": [
+        "page_mismatch_got_748_expected_[750]"
+      ],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q016",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_COMPOUND_15868",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 900,
+        "page_start": 900,
+        "page_end": 900,
+        "section": "Plan / Laboratory Orders",
+        "character_span": [
+          0,
+          2289
+        ],
+        "bounding_box": [
+          56.0,
+          177.12498474121094,
+          570.0001831054688,
+          189.49098205566406
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q017",
+      "hit_at_10": true,
+      "page_overlap": false,
+      "matched_chunk_id": "PT55188_ENCKEY_14701",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 162,
+        "page_start": 162,
+        "page_end": 165,
+        "section": "Encounter Key Facts",
+        "character_span": [
+          0,
+          4500
+        ],
+        "bounding_box": [
+          263.6000061035156,
+          713.7000122070312,
+          540.6079711914062,
+          736.6920166015625
+        ]
+      },
+      "issues": [
+        "page_mismatch_got_162_expected_[1050]"
+      ],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    },
+    {
+      "query_id": "Q018",
+      "hit_at_10": true,
+      "page_overlap": true,
+      "matched_chunk_id": "PT55188_ATOMIC_08402",
+      "fields": {
+        "document_id": "PT-55188",
+        "page": 1050,
+        "page_start": 1050,
+        "page_end": 1050,
+        "section": "Vitals",
+        "character_span": [
+          0,
+          31
+        ],
+        "bounding_box": [
+          254.39999389648438,
+          56.199989318847656,
+          439.8079833984375,
+          103.19198608398438
+        ]
+      },
+      "issues": [],
+      "top_k_fully_grounded": 10,
+      "top_k": 10
+    }
+  ]
+}
